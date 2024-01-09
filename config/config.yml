@@ -1,0 +1,7 @@
+bot:
+  token: ''
+
+mysql:
+  database: todo_db
+  user: user
+  password: password
