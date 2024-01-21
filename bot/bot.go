@@ -4,6 +4,7 @@ import (
 	"ToDo_bot/config"
 	"ToDo_bot/handlers"
 	"log"
+	"strconv"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -59,7 +60,7 @@ func Run() {
 				bot.Send(msg)
 				break
 			case "updTask":
-				id := strings.Split(args, " ")[0]
+				id, _ := strconv.Atoi(strings.Split(args, " ")[0])
 				newTask := strings.Join(strings.Split(args, " ")[1:], " ")
 				result := handlers.UpdTask(update.Message.Chat.ID, id, newTask)
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, result)

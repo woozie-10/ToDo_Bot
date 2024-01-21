@@ -12,14 +12,17 @@ import (
 var DB *gorm.DB
 
 func InitDB() error {
+	var err error
 	mysql_database := config.Config.GetString("mysql.database")
 	mysql_user := config.Config.GetString("mysql.user")
 	mysql_password := config.Config.GetString("mysql.password")
-	dsn := fmt.Sprintf("%s:%s@tcp(db:3306)/%s", mysql_user, mysql_password, mysql_database)
-	DB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	dsn := fmt.Sprintf("%s:%s@tcp(db:3306)/%s?parseTime=true", mysql_user, mysql_password, mysql_database)
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
-	DB.AutoMigrate(&entities.Task{})
+	if err := DB.AutoMigrate(&entities.Task{}); err != nil {
+		panic(err)
+	}
 	return nil
 }
