@@ -2,34 +2,24 @@ package database
 
 import (
 	"ToDo_bot/config"
-	"database/sql"
+	"ToDo_bot/entities"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-var DB *sql.DB
+var DB *gorm.DB
 
 func InitDB() error {
-	var err error
 	mysql_database := config.Config.GetString("mysql.database")
 	mysql_user := config.Config.GetString("mysql.user")
 	mysql_password := config.Config.GetString("mysql.password")
-	DB, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(db:3306)/%s", mysql_user, mysql_password, mysql_database))
+	dsn := fmt.Sprintf("%s:%s@tcp(db:3306)/%s", mysql_user, mysql_password, mysql_database)
+	DB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return err
+		panic(err)
 	}
-	if err = DB.Ping(); err != nil {
-		return err
-	}
-	_, err = DB.Exec(`
-        CREATE TABLE IF NOT EXISTS Tasks (
-            Id INT AUTO_INCREMENT PRIMARY KEY,
-            TgId INT,
-            Text MEDIUMTEXT
-        )
-    `)
-	if err != nil {
-		return err
-	}
+	DB.AutoMigrate(&entities.Task{})
 	return nil
 }
