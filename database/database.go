@@ -11,7 +11,6 @@ var DB *sql.DB
 
 func InitDB() error {
 	var err error
-	println(config.Config.GetString("bot.token"))
 	mysql_database := config.Config.GetString("mysql.database")
 	mysql_user := config.Config.GetString("mysql.user")
 	mysql_password := config.Config.GetString("mysql.password")
